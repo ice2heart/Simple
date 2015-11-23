@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Simple Client-server home automation</title>
+        <link href="http://brobin.github.io/hacker-bootstrap/css/hacker.css" rel="stylesheet">
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript">
+		//Дождемся загрузки страницы
+        $(document).ready(function() {
+			//Добавим кнопке функцию по посылке POST запроса в наше API
+            $("#update").click(function(){
+                var sendText = $("#input").val() || " ";
+                $.post('/api/settext', {'text': sendText});
+            });
+			//Тут интереснее будем с интервалом в пол секунды спрашивать у сервера состояние
+			//Можно сделать по другому но так проще и быстрее
+            setInterval(function(){
+				//Опять знакомый вызов jquery c Функцией которая по окончанию установит значение
+                $.post('/api/status', function(data){
+                    $("#door").text(data['door']);
+                });
+            }, 500);
+        });
+        </script
+    </head>
+    <body>
+        <div class="container">
+            <div class="row tall-row">
+                <div class="col-sm-8 col-lg-12">
+                    <h1>Control Console</h1>
+                    <hr>
+                </div>
+            </div>
+            <div class="form-group">
+                <p>Status</p>
+                <p>Vault door is <a id="door">unknown</a></p>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="inputDefault">Info text</label>
+                <p><input class="form-control" id="input" type="text"></p>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p><a href="#" class="btn btn-default" id="update">Update</a></p>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>
